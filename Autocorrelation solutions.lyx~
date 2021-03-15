@@ -1,0 +1,648 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Itemize
+TODOS:Actually write up this up properly, take long difference?
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+long difference
+\end_layout
+
+\begin_layout Itemize
+interact county and post
+\end_layout
+
+\begin_layout Itemize
+cluster counties
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Autocorrellation issues: I want to find the differences between closures/revenue
+ based on income
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+2 different attempts at correcting
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Using the base state-level data after the initial dip and applying cochrane-orcu
+tt.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Performed initial diagnostic via Durbin-Watson, found statistically significant
+ presence of first-order autocorrelation
+\end_layout
+
+\begin_layout Itemize
+Applied Cochrane-Orcutt correction, for our revenue analysis we go from
+ highly positively correlated to mildly negatively correlated.
+ We can't reject the null for the DW test after applying the Cochrane-Orcutt
+ correction.
+\end_layout
+
+\begin_layout Itemize
+The estimates I care about, primarily the difference in outcomes between
+ high and low income brackets, remain statistically significant and pretty
+ similar to our first set of plain lm estimates.
+ 
+\end_layout
+
+\begin_layout Itemize
+However, upon visualization of residuals in both the cochrane-orcutt and
+ non-transformed regressions, I'm worried that this isn't enough to actually
+ deal with my problem, as the residuals show a clear pattern stil
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Rebuilding the county level data with income brackets (think this is my
+ winner)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+First, I took the county level data, which only includes the change in revenue/c
+losures by county, with no information about income catagory.
+\end_layout
+
+\begin_layout Itemize
+Then, I pulled median income on a per-county basis from the US census data
+ for 2019, and merged that with our county-level small business data.
+\end_layout
+
+\begin_layout Itemize
+Then, I reconstructed income quartiles and catagories, and assigned each
+ county a high, medium, or low dummy variable.
+\end_layout
+
+\begin_layout Itemize
+This let me create panel data! After that, I cut the data to a point after
+ the big drop.
+ Upon further analysis, and applying autocorrelation diagnostics like DW
+ again, I found no statistically significant evidence of autocorrelation,
+ and the residuals look significantly more random.
+ Progress!
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Plus, I found a neat tool that lets me run R code inside LyX.
+ The future is in fact, now.
+ 
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Itemize
+Data dictonary
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Date
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+pretty self explanatory, year-month-day.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+countyfips
+\end_layout
+
+\begin_layout Itemize
+county FIPS code
+\end_layout
+
+\begin_layout Itemize
+merchants_all
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+percentage of merchants closed relative to Jan.
+ 2020
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+revenue_all
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+percentage revenue change relative to jan.
+ 2020
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Quartile
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Income quartile per county
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Lowinc at 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+lowest income quartile counties
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+middleInc
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+second and third income quartile counties
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+highInc
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+fourth income quartile counties (RICH BITCHES)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+post
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+dummy for after the start of california-wide stay at home order
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Code block for output>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(tidyverse)
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd("~/Documents/Thesis/")
+\end_layout
+
+\begin_layout Plain Layout
+
+sbTest<-read.csv("~/Documents/Thesis/data/EconomicTracker-main/data/Womply
+ - State - Daily.csv", na.strings=".")
+\end_layout
+
+\begin_layout Plain Layout
+
+sbTest<- (unite(sbTest, "date", c("year","month","day"), sep = "/"))
+\end_layout
+
+\begin_layout Plain Layout
+
+sbTest$date <- as.Date(sbTest$date)
+\end_layout
+
+\begin_layout Plain Layout
+
+sbTestCA <- filter(sbTest, statefips == 6)
+\end_layout
+
+\begin_layout Plain Layout
+
+sbTestCA$post <- 0
+\end_layout
+
+\begin_layout Plain Layout
+
+sbTestCA$post <- as.factor(ifelse(sbTestCA$date >= "2020-03-19",sbTestCA$post+1,s
+bTestCA$post+0))
+\end_layout
+
+\begin_layout Plain Layout
+
+sbTestbyclass <- pivot_longer(sbTestCA, 4:6, names_to = "merchantsAll")
+\end_layout
+
+\begin_layout Plain Layout
+
+sbTestRevenue<- dplyr::select(sbTestCA, date,revenue_inchigh, revenue_incmiddle,
+ revenue_inclow,post)
+\end_layout
+
+\begin_layout Plain Layout
+
+Revenuebyclass<- pivot_longer(sbTestRevenue, 2:4, names_to="MerchantClass",
+ values_to="PercentDelta")
+\end_layout
+
+\begin_layout Plain Layout
+
+Revenue<-(lm(PercentDelta~MerchantClass+post+date,Revenuebyclass))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+RevenueCut<- dplyr::filter(Revenuebyclass, date>="2020-06-20")
+\end_layout
+
+\begin_layout Plain Layout
+
+ClosuresCut<- dplyr::filter(Revenuebyclass, date>="2020-06-20")
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Revenue<-(lm(PercentDelta~MerchantClass+date,Revenuebyclass))
+\end_layout
+
+\begin_layout Plain Layout
+
+RegCutRevenue<-(lm(PercentDelta~MerchantClass+date,RevenueCut))
+\end_layout
+
+\begin_layout Plain Layout
+
+library(orcutt)
+\end_layout
+
+\begin_layout Plain Layout
+
+dwtest(Revenue)
+\end_layout
+
+\begin_layout Plain Layout
+
+CO.Revenue<-cochrane.orcutt(Revenue) 
+\end_layout
+
+\begin_layout Plain Layout
+
+CO.RevenueCut<-cochrane.orcutt(RegCutRevenue)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(Revenue$residuals)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(CO.Revenue$residuals)
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(CO.Revenue)
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(CO.RevenueCut)
+\end_layout
+
+\begin_layout Plain Layout
+
+#Next up is the county-level data, reconstruction, residual analysis etc.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+library(plm)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(readxl)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(miceadds)
+\end_layout
+
+\begin_layout Plain Layout
+
+SBcounty<-read.csv("~/Documents/Thesis/data/EconomicTracker-main/data/Womply
+ - County - Daily.csv", na.strings=".")
+\end_layout
+
+\begin_layout Plain Layout
+
+countylevelincome <- read_excel("data/countylevelincome.xlsx", skip = 1)
+\end_layout
+
+\begin_layout Plain Layout
+
+CAincome<- select(countylevelincome,1,2,12)
+\end_layout
+
+\begin_layout Plain Layout
+
+CAincome$FIPS<-as.numeric(CAincome$FIPS)
+\end_layout
+
+\begin_layout Plain Layout
+
+SBcountyCA<-filter(SBcounty, grepl("^6", countyfips))
+\end_layout
+
+\begin_layout Plain Layout
+
+SBcountyCA$FIPS<-SBcountyCA$countyfips
+\end_layout
+
+\begin_layout Plain Layout
+
+CAincome$quartile<-ntile(CAincome$`Median Household Income (2019)`,4)
+\end_layout
+
+\begin_layout Plain Layout
+
+FullData<-full_join(SBcountyCA,CAincome,by="FIPS")
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut<-select(FullData,1:6,10)
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut<-(unite(DataCut, "date", c("year","month","day"), sep = "/"))
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$date <- as.Date(DataCut$date)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$lowInc<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$middleInc<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$highInc<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$highInc<-ifelse(DataCut$quartile == 4, DataCut$highInc<-1, DataCut$highI
+nc<-0)
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$lowInc<-ifelse(DataCut$quartile == 1, DataCut$lowInc<-1, DataCut$lowInc<
+-0)
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$middleInc<-ifelse(DataCut$lowInc == 0 & DataCut$highInc == 0, DataCut$mi
+ddleInc<-1, DataCut$middleInc<-0)
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$post <- 0
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut$post <-(ifelse(DataCut$date >= "2020-03-19",DataCut$post+1,DataCut$post+
+0))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ClusterReg<-lm.cluster(DataCut,revenue_all~lowInc+middleInc+highInc+post,DataCut$
+countyfips)
+\end_layout
+
+\begin_layout Plain Layout
+
+RegReg<-lm(revenue_all~lowInc+middleInc+highInc+post+date,DataCut)
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(ClusterReg)
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(RegReg)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(orcutt)
+\end_layout
+
+\begin_layout Plain Layout
+
+dwtest(RegReg)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(RegReg$residuals)
+\end_layout
+
+\begin_layout Plain Layout
+
+plmtest<-(plm(revenue_all~lowInc+middleInc+highInc+post+date,DataCut))
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(plmtest)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+DataCut2<- dplyr::filter(DataCut, date>="2020-06-20")
+\end_layout
+
+\begin_layout Plain Layout
+
+RegReg2<-lm(revenue_all~lowInc+middleInc+date,DataCut2)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(RegReg2$residuals)
+\end_layout
+
+\begin_layout Plain Layout
+
+dwtest(RegReg2)
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(RegReg2)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
